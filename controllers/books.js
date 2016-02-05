@@ -38,15 +38,19 @@ module.exports.search = function(req, res, next) {
 };
 
 module.exports.showAddForm = function(req, res, next) {
-    res.render('addbook', {
-        resources: resources
-    });
+    users.getAll(function(users) {
+        res.render('addbook', {
+            users: users,
+            resources: resources
+        });        
+    })
+
 };
 
 module.exports.addNew = function(req, res, next) {
-    books.add(req.body.txtName.trim(),   req.body.txtSeries.trim(),
-              req.body.txtAuthor.trim(), req.body.txtIsbn.trim(),
-              req.body.txtOwner.trim(), function(err) {
+    books.add(req.body.name.trim(),   req.body.series.trim(),
+              req.body.author.trim(), req.body.isbn.trim(),
+              req.body.owner, function(err) {
         if (err)
             res.send(err);
         else
@@ -78,14 +82,17 @@ module.exports.switchTo = function(req, res, next) {
 };
 
 module.exports.delete = function(req, res, next) {
-    
     var url = 'http://' + req.headers.host + '/api/v1/books/' + req.params.id;
     
     request.del(url, function(err, resp, body) {
         if (err)
             res.send(err);
         else
-            res.redirect('/list');    
+            if (resp.status_code != 200) {
+                res.send(body);
+            }
+            else
+                res.redirect('/list');    
     }).auth('cxcai', 'cxcai', true); 
 
 };

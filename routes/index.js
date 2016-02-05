@@ -4,7 +4,8 @@ var books = require('../controllers/books');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'BoolShelf' });
+    console.log(req.flash('test', 'Test'));
+    res.render('index', { title: 'BoolShelf' });
 });
 
 

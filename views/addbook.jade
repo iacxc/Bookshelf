@@ -5,42 +5,34 @@ block script
         $(document).ready(function() {
             $("#frmAdd").on("submit", function(e) {
                 e.preventDefault();
-                var name = $("#txtName");
-                var series = $("#txtSeries");
-                var author = $("#txtAuthor");
-                var isbn = $("#txtIsbn");
-                var owner = $("#txtOwner");
-
+                var name = $("#name");
                 if (name.val().trim() == "") {
                     alert("#{resources.bookname} cannot be empty");
                     name.focus();
                     return;
                 } 
 
+                var series = $("#series");
                 if (series.val().trim() == "") {
                     alert("#{resources.bookseries} cannot be empty");
                     series.focus();
                     return;
                 } 
-
+                
+                var author = $("#author");
                 if (author.val().trim() == "") {
                     alert("#{resources.bookauthor} cannot be empty");
                     author.focus();
                     return;
                 } 
 
+                var isbn = $("#isbn");
                 if (isbn.val().trim() == "") {
                     alert("#{resources.isbn} cannot be empty");
                     isbn.focus();
                     return;
                 } 
 
-                if (owner.val().trim() == "") {
-                    alert("#{resources.bookowner} cannot be empty");
-                    owner.focus();
-                    return;
-                } 
-                    
                 this.submit();
             });
         });
@@ -51,34 +43,37 @@ block content
             table
                 tr
                     td 
-                        label(for="txtName")= resources.bookname
+                        label(for="name")= resources.bookname
                     td *
                     td
-                        input(id="txtName" name="txtName")
+                        input(id="name" name="name")
                 tr
                     td 
-                        label(for="txtSeries")= resources.bookseries
+                        label(for="series")= resources.bookseries
                     td *
                     td
-                        input(id="txtSeries" name="txtSeries")
+                        input(id="series" name="series")
                 tr
                     td
-                        label(for="txtAuthor")= resources.bookauthor
+                        label(for="author")= resources.bookauthor
                     td *
                     td
-                        input(id="txtAuthor" name="txtAuthor")
+                        input(id="author" name="author")
                 tr
                     td
-                        label(for="txtIsbn")= resources.isbn
+                        label(for="isbn")= resources.isbn
                     td *
                     td
-                        input(id="txtIsbn" name="txtIsbn")
+                        input(id="isbn" name="isbn")
                 tr
                     td 
-                        label(for="txtOwner")= resources.bookowner
+                        label(for="owner")= resources.bookowner
                     td *
                     td
-                        input(id="txtOwner" name="txtOwner")
+                        select(id="owner" name="owner")
+                            each user in users
+                                option(value="#{user.id}")= user.Fullname()
+                        
                 tr
                     td(align="right" colspan="2")
                         input(type="submit" value="#{resources.ok}")

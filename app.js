@@ -1,14 +1,18 @@
+
 var express = require('express');
-var basicAuth = require('basic-auth-connect');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+var flash = require('connect-flash');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
+
+var settings = require('./settings');
 
 var app = express();
 
@@ -22,7 +26,15 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('Bookshelf'));
+app.use(session({
+    secret: settings.cookieSecret,
+    resave: true, 
+    saveUninitialized: true, 
+     
+    cookie: {maxAge: 60000}}));
+
+app.use(flash(app));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
