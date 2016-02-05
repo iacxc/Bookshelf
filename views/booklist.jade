@@ -19,30 +19,34 @@ block script
 block content
     h1 Books
 
-    div.divForm
-        form(id="frmSearch" method="post" action="/search")
-            label(for="txtName") #{resources.name}:
+    div.divInput(style="padding:10px;width:750px")
+        form(id="frmSearch" method="post" action="/search" style="float:left")
+            label(for="txtName") #{resources.bookname}:
             input.searchInput(type="text" id="txtName" name="txtName")
             | &nbsp;
-            label(for="txtSeries") #{resources.series}:
+            label(for="txtSeries") #{resources.bookseries}:
             input.searchInput(type="text" id="txtSeries" name="txtSeries")
             | &nbsp;
-            label(for="txtAuthor") #{resources.author}:
+            label(for="txtAuthor") #{resources.bookauthor}:
             input.searchInput(type="text" id="txtAuthor" name="txtAuthor")
             | &nbsp;&nbsp;&nbsp;
-            input(type="Submit" value="Search")
-
+            input(type="submit" value="#{resources.search}")
+        
+        button(type="submit" style="margin-left:80px" 
+               onclick="{location.href='/add'}")= resources.addbook
+        
     hr
     table(cellspacing="1")
         tr(bgcolor="#c0c0c0")
-            th= resources.name
-            th= resources.series
-            th= resources.author
+            th= resources.bookname
+            th= resources.bookseries
+            th= resources.bookauthor
             th= resources.isbn
-            th= resources.owner
-            th= resources.create
-            th= resources.status
-            th= resources.lastmodified
+            th= resources.bookowner
+            th= resources.bookcreate
+            th= resources.bookstatus
+            th= resources.booklastmodified
+            th= resources.op
 
         each book in books
             tr(bgcolor="#eeeeee")
@@ -55,6 +59,10 @@ block content
                 td
                     a(href="/#{book.id}/switchto")= book.status
                 td= book.lastmodified
+                td
+                    a(href="/#{book.id}/delete"
+                      onclick="return confirm('Are you sure to delete?');"
+                      )= resources.delete
         tr
             td(colspan="8" align="right")           
                 a(href="/list") All

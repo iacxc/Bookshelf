@@ -1,0 +1,86 @@
+extend layout
+
+block script
+    script(type="text/javascript").
+        $(document).ready(function() {
+            $("#frmAdd").on("submit", function(e) {
+                e.preventDefault();
+                var name = $("#txtName");
+                var series = $("#txtSeries");
+                var author = $("#txtAuthor");
+                var isbn = $("#txtIsbn");
+                var owner = $("#txtOwner");
+
+                if (name.val().trim() == "") {
+                    alert("#{resources.bookname} cannot be empty");
+                    name.focus();
+                    return;
+                } 
+
+                if (series.val().trim() == "") {
+                    alert("#{resources.bookseries} cannot be empty");
+                    series.focus();
+                    return;
+                } 
+
+                if (author.val().trim() == "") {
+                    alert("#{resources.bookauthor} cannot be empty");
+                    author.focus();
+                    return;
+                } 
+
+                if (isbn.val().trim() == "") {
+                    alert("#{resources.isbn} cannot be empty");
+                    isbn.focus();
+                    return;
+                } 
+
+                if (owner.val().trim() == "") {
+                    alert("#{resources.bookowner} cannot be empty");
+                    owner.focus();
+                    return;
+                } 
+                    
+                this.submit();
+            });
+        });
+        
+block content
+    div.divInput(style="margin-left:100px;padding:30px;width:300px")
+        form(id="frmAdd" method="post" action="/add")
+            table
+                tr
+                    td 
+                        label(for="txtName")= resources.bookname
+                    td *
+                    td
+                        input(id="txtName" name="txtName")
+                tr
+                    td 
+                        label(for="txtSeries")= resources.bookseries
+                    td *
+                    td
+                        input(id="txtSeries" name="txtSeries")
+                tr
+                    td
+                        label(for="txtAuthor")= resources.bookauthor
+                    td *
+                    td
+                        input(id="txtAuthor" name="txtAuthor")
+                tr
+                    td
+                        label(for="txtIsbn")= resources.isbn
+                    td *
+                    td
+                        input(id="txtIsbn" name="txtIsbn")
+                tr
+                    td 
+                        label(for="txtOwner")= resources.bookowner
+                    td *
+                    td
+                        input(id="txtOwner" name="txtOwner")
+                tr
+                    td(align="right" colspan="2")
+                        input(type="submit" value="#{resources.ok}")
+                    td
+                        input(type="reset" value="#{resources.reset}")                        

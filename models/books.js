@@ -30,61 +30,85 @@ var formatDate = function(dt) {
     return yr + "-" + mnth + "-" + day;
 };
 
-class Book {
-    constructor(id, name, series, author, isbn, owner, status) {
-        this.id =  id;
-        this.name = name;
-        this.series = series;
-		this.author = author;		
-        this.isbn = isbn;
-		this.owner = owner;
-        this.status = status;
-        this.createdate = formatDate(new Date());
-        this.lastmodified = formatDate(new Date());
-    }
-    
-    static fields() {
-        return ['id', 'name', 'series', 'author', 'isbn', 'owner', 
-                'status', 'createdate', 'lastmodified'].join(",");
-    }
+function Book() {
+    if (arguments.length === 1) {
+        var row = arguments[0];
         
-    Sql() {
-        return util.format("insert into books(" + Book.fields() + ")" +
-              " values(null, '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
-              this.name, this.series, this.author, this.isbn, 
-              this.owner, this.createdate, this.lastmodified);
+        this.id           = row.id;
+        this.name         = row.name;
+        this.series       = row.series;
+        this.author       = row.author;
+        this.isbn         = row.isbn;
+        this.owner        = row.owner;
+        this.status       = row.status;
+        this.createdate   = row.createdate;
+        this.lastmodified = row.lastmodified;
     }
+    else {
+        this.id           = arguments[0];
+        this.name         = arguments[0];
+        this.series       = arguments[0]
+        this.author       = arguments[0];		
+        this.isbn         = arguments[0];
+        this.owner        = arguments[0];
+        this.status       = arguments[0];
+        this.createdate   = arguments[0];
+        this.lastmodified = arguments[0];
+    }
+};    
+
+Book.prototype.Sql = function() {
+    return util.format("insert into books(" + Book.fields() + ")" +
+        " values(null, '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+        this.name, this.series, this.author, this.isbn, 
+        this.owner, this.createdate, this.lastmodified);
 };
 
-
+Book.prototype.Delete = function(callback) {
+    db.delBooks({id: this.id}, function(err) {
+        callback(err);
+    });
+};
              
 module.exports.getAll = function(callback) {
-    db.getBooks(Book.fields(), null, function(err, rows) {
+    db.getBooks(null, function(err, rows) {
         var books = _.map(rows, function(row) {
-            return new Book(row.id, row.name, row.series, row.author,
-                            row.isbn, row.owner, row.status);
+            return new Book(row);
         });
         callback(err, books);
     });
 };
 
 module.exports.search = function(option, callback) {
-    db.getBooks(Book.fields(), option, function(err, rows) {
+    db.getBooks(option, function(err, rows) {
         return callback(err, rows);
     });
 };
 
 module.exports.findById = function(bookid, callback) {
-    db.getBooks(Book.fields(), {id: bookid}, function(err, rows) {
+    db.getBooks({id: bookid}, function(err, rows) {
+        if (err)
+            return callback(err);
+            
         if (rows.length == 0)
-            callback(err, null);
-        else
-            callback(err, rows[0]); 
+            callback({error: "No such book"});
+        else 
+            callback(null, new Book(rows[0]));
     });
 };
 
 module.exports.switchto = function(bookid, debtor, callback) {
-    db.switchBook(bookid, debtor, function(err) {
+    var today = formatDate(new Date());
+    db.switchBook(bookid, debtor, today, function(err) {
         callback(err);
     });
+};
+
+module.exports.add = function(name, series, author, isbn, owner, callback) {
+    var today = formatDate(new Date());
+    db.addBook(name, series, author, isbn, owner, 
+               'available', today, today, function(err) {
+        callback(err);
+    });
+  
 };

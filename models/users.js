@@ -26,10 +26,13 @@ module.exports.getAll = function(callback) {
 };
 
 module.exports.find = function(uid, callback) {
-    users.forEach(function(user) {
-        if (user.uid == uid) {
-            callback(user);
-            return;
+    var found = users.some(function(user) {
+        if (user.id == uid) {
+            callback(null, user);
+            return true;
         }
     });
+    
+    if (! found)
+        callback({error: "not found"});
 }
