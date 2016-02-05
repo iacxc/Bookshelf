@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    p= book.name
+    
+    form(method="post" action="/#{book.id}/switchto")
+        select(name="debtor")
+            each user in users
+                option(value="#{user.id}")= user.Fullname()
+        | 
+        input(type="submit" value="Switch")

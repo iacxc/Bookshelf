@@ -1,0 +1,60 @@
+extends layout
+
+block script
+    script(type="text/javascript").
+        $(document).ready(function() {
+            $("#frmSearch").on("submit", function(e) {
+                e.preventDefault();
+                var name = $("#txtName").val().trim();
+                var series = $("#txtSeries").val().trim();
+                var author = $("#txtAuthor").val().trim();
+
+                if (name.length + series.length + author.length == 0)
+                    return;
+                    
+                this.submit();
+            });
+        });
+
+block content
+    h1 Books
+
+    div.divForm
+        form(id="frmSearch" method="post" action="/search")
+            label(for="txtName") #{resources.name}:
+            input.searchInput(type="text" id="txtName" name="txtName")
+            | &nbsp;
+            label(for="txtSeries") #{resources.series}:
+            input.searchInput(type="text" id="txtSeries" name="txtSeries")
+            | &nbsp;
+            label(for="txtAuthor") #{resources.author}:
+            input.searchInput(type="text" id="txtAuthor" name="txtAuthor")
+            | &nbsp;&nbsp;&nbsp;
+            input(type="Submit" value="Search")
+
+    hr
+    table(cellspacing="1")
+        tr(bgcolor="#c0c0c0")
+            th= resources.name
+            th= resources.series
+            th= resources.author
+            th= resources.isbn
+            th= resources.owner
+            th= resources.create
+            th= resources.status
+            th= resources.lastmodified
+
+        each book in books
+            tr(bgcolor="#eeeeee")
+                td= book.name
+                td= book.series
+                td= book.author
+                td= book.isbn
+                td= book.owner
+                td= book.createdate
+                td
+                    a(href="/#{book.id}/switchto")= book.status
+                td= book.lastmodified
+        tr
+            td(colspan="8" align="right")           
+                a(href="/list") All
