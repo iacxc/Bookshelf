@@ -60,6 +60,8 @@ block content
                     a(href="/#{book.id}/switchto")= book.status
                 td= book.lastmodified
                 td
+                    a(href="/#{book.id}/modify")= resources.modify
+                    | &nbsp;&nbsp;&nbsp;
                     a(href="/#{book.id}/delete"
                       onclick="return confirm('Are you sure to delete?');"
                       )= resources.delete

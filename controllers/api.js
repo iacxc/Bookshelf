@@ -33,19 +33,10 @@ module.exports.delBookById = function(req, res, next) {
         return res.status('401').send({error: 'Unauthorized'});
     }
     
-    books.findById(req.params.id, function(err, book) {
+    books.deleteById(req.params.id, function(err) {
         if (err)
-            return res.send(err);
-
-        if (book.owner != user.name)
-            res.status('403').send({error: 'Not the owner'});
-        else 
-            book.Delete(function(err) {
-                if (err)
-                    res.send(err);
-                else
-                    res.status(200).send({status: 'OK'});
-            })            
+            res.send(err);
+        else
+            res.status(200).send({status: 'OK'});
     });
-
 };

@@ -8,17 +8,13 @@ class User {
         this.id = id;
 	    this.firstname = firstname;
         this.lastname = lastname;
-         		
+        this.fullname = util.format("%s, %s", lastname, firstname);
     };
-    Fullname() {
-        return util.format("%s, %s", this.lastname, this.firstname);
-    }
 };
 
 var users = [new User("ccai", "Qishu", "Cai"),
 	         new User("cxcai", "Chengxin", "Cai"),
              new User("jn", "Nan", "Ni"),
-             new User("user1", "User", "Unknown")
             ];
              
 module.exports.getAll = function(callback) {

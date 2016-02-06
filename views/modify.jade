@@ -3,11 +3,9 @@ extend layout
 block script
     script(type="text/javascript").
         $(document).ready(function() {
-            var name = $("#name");
             $("#frmAdd").on("submit", function(e) {
                 e.preventDefault();
-
-                
+                var name = $("#name");
                 if (name.val().trim() == "") {
                     alert("#{resources.bookname} cannot be empty");
                     name.focus();
@@ -23,48 +21,36 @@ block script
 
                 this.submit();
             });
-            
-            $("#addcontinue").on("click", function(e) {
-                $("#continue").val("yes");
-                $("#frmAdd").submit();
-            });
-            
-            $("#back").on("click", function(e) {
-                history.back(-1);              
-            });
-            
-            name.focus();
         });
         
 block content
     div.divInput(style="margin-left:100px;padding:30px;width:300px")
-        form(id="frmAdd" method="post" action="/add")
-            input(type="hidden" id="continue" name="continue" value="no")
+        form(id="frmAdd" method="post" action="/#{book.id}/modify")
             table
                 tr
                     td 
                         label(for="name")= resources.bookname
                     td *
                     td
-                        input(id="name" name="name")
+                        input(id="name" name="name" value="#{book.name}")
                 tr
                     td 
                         label(for="series")= resources.bookseries
                     td 
                     td
-                        input(id="series" name="series")
+                        input(id="series" name="series" value="#{book.series}")
                 tr
                     td
                         label(for="author")= resources.bookauthor
                     td 
                     td
-                        input(id="author" name="author")
+                        input(id="author" name="author" value="#{book.author}")
                 tr
                     td
                         label(for="isbn")= resources.isbn
                     td *
                     td
-                        input(id="isbn" name="isbn")
+                        input(id="isbn" name="isbn" value="#{book.isbn}")
                 tr
                     td 
                         label(for="owner")= resources.bookowner
@@ -72,12 +58,17 @@ block content
                     td
                         select(id="owner" name="owner")
                             each user in users
-                                option(value="#{user.id}")= user.fullname
+                                - if (user.id == book.owner)
+                                    option(value="#{user.id}"
+                                           selected="selected")= user.fullname
+                                - else 
+                                    option(value="#{user.id}")= user.fullname
+                        
                 tr
                     td(align="right" colspan="2")
                         input(type="submit" value="#{resources.ok}")
                     td
-                        input(type="button" id="addcontinue" value="#{resources.continue}")
                         input(type="reset" value="#{resources.reset}")
-                        input(type="button" id="back" value="#{resources.back}")
-                                         
+                        | &nbsp;&nbsp;   
+                        button(type="button" onClick="javascript:history.back(-1);"
+                              )= resources.back                      

@@ -6,6 +6,6 @@ block content
     form(method="post" action="/#{book.id}/switchto")
         select(name="debtor")
             each user in users
-                option(value="#{user.id}")= user.Fullname()
+                option(value="#{user.id}")= user.fullname
         | 
         input(type="submit" value="Switch")

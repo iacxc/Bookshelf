@@ -15,6 +15,9 @@ router.post('/search', books.search);
 router.get('/add', books.showAddForm);
 router.post('/add', books.addNew);
 
+router.get('/:id/modify', books.showModifyForm);
+router.post('/:id/modify', books.modify);
+
 router.get('/:id/switchto', books.showSwitchForm);
 router.post('/:id/switchto', books.switchTo);
 router.get('/:id/delete', books.delete);

@@ -1,4 +1,5 @@
 var request = require('request');
+var debug = require('debug')('bookshelf:server');
 
 var books = require('../models/books');
 var users = require('../models/users');
@@ -48,13 +49,17 @@ module.exports.showAddForm = function(req, res, next) {
 };
 
 module.exports.addNew = function(req, res, next) {
+    debug("books.addNew");
     books.add(req.body.name.trim(),   req.body.series.trim(),
               req.body.author.trim(), req.body.isbn.trim(),
               req.body.owner, function(err) {
         if (err)
             res.send(err);
         else
-            res.redirect('/list');              
+            if (req.body.continue == 'yes')
+                res.redirect('/add');
+            else         
+                res.redirect('/list');              
     });
 };
 
@@ -82,17 +87,40 @@ module.exports.switchTo = function(req, res, next) {
 };
 
 module.exports.delete = function(req, res, next) {
-    var url = 'http://' + req.headers.host + '/api/v1/books/' + req.params.id;
-    
-    request.del(url, function(err, resp, body) {
+    books.deleteById(req.params.id, function(err) {
         if (err)
             res.send(err);
         else
-            if (resp.status_code != 200) {
-                res.send(body);
-            }
-            else
-                res.redirect('/list');    
-    }).auth('cxcai', 'cxcai', true); 
-
+            res.redirect('/list');    
+    });
 };
+
+module.exports.showModifyForm = function(req, res, next) {
+    users.getAll(function(users) {
+        books.findById(req.params.id, function(err, book) {
+            if (err)
+                res.send(err);
+            else {
+                if (book)
+                    res.render('modify', {
+                        book: book,
+                        users: users,
+                        resources: resources});
+                else
+                    res.status(404).send({message: 'Invalid book'});
+            }
+        });
+    });
+};
+
+module.exports.modify = function(req, res, next) {
+    books.modify(req.params.id, 
+                 req.body.name.trim(), req.body.series.trim(),
+                 req.body.author.trim(), req.body.isbn.trim(), req.body.owner, 
+                 function(err) {
+        if (err)
+            res.send(err);
+        else
+            res.redirect('/list');              
+    });
+}

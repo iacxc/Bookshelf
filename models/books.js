@@ -30,46 +30,42 @@ var formatDate = function(dt) {
     return yr + "-" + mnth + "-" + day;
 };
 
-function Book() {
-    if (arguments.length === 1) {
-        var row = arguments[0];
-        
-        this.id           = row.id;
-        this.name         = row.name;
-        this.series       = row.series;
-        this.author       = row.author;
-        this.isbn         = row.isbn;
-        this.owner        = row.owner;
-        this.status       = row.status;
-        this.createdate   = row.createdate;
-        this.lastmodified = row.lastmodified;
+class Book {
+    constructor() {
+        if (arguments.length === 1) {
+            var row = arguments[0];
+            
+            this.id           = row.id;
+            this.name         = row.name;
+            this.series       = row.series;
+            this.author       = row.author;
+            this.isbn         = row.isbn;
+            this.owner        = row.owner;
+            this.status       = row.status;
+            this.createdate   = row.createdate;
+            this.lastmodified = row.lastmodified;
+        }
+        else {
+            this.id           = arguments[0];
+            this.name         = arguments[0];
+            this.series       = arguments[0]
+            this.author       = arguments[0];		
+            this.isbn         = arguments[0];
+            this.owner        = arguments[0];
+            this.status       = arguments[0];
+            this.createdate   = arguments[0];
+            this.lastmodified = arguments[0];
+        }
     }
-    else {
-        this.id           = arguments[0];
-        this.name         = arguments[0];
-        this.series       = arguments[0]
-        this.author       = arguments[0];		
-        this.isbn         = arguments[0];
-        this.owner        = arguments[0];
-        this.status       = arguments[0];
-        this.createdate   = arguments[0];
-        this.lastmodified = arguments[0];
+    Sql() {
+        return util.format("insert into books(" + Book.fields() + ")" +
+            " values(null, '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+            this.name, this.series, this.author, this.isbn, 
+            this.owner, this.createdate, this.lastmodified);
     }
 };    
 
-Book.prototype.Sql = function() {
-    return util.format("insert into books(" + Book.fields() + ")" +
-        " values(null, '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
-        this.name, this.series, this.author, this.isbn, 
-        this.owner, this.createdate, this.lastmodified);
-};
 
-Book.prototype.Delete = function(callback) {
-    db.delBooks({id: this.id}, function(err) {
-        callback(err);
-    });
-};
-             
 module.exports.getAll = function(callback) {
     db.getBooks(null, function(err, rows) {
         var books = _.map(rows, function(row) {
@@ -85,8 +81,8 @@ module.exports.search = function(option, callback) {
     });
 };
 
-module.exports.findById = function(bookid, callback) {
-    db.getBooks({id: bookid}, function(err, rows) {
+module.exports.findById = function(id, callback) {
+    db.getBooks({id: id}, function(err, rows) {
         if (err)
             return callback(err);
             
@@ -97,9 +93,9 @@ module.exports.findById = function(bookid, callback) {
     });
 };
 
-module.exports.switchto = function(bookid, debtor, callback) {
+module.exports.switchto = function(id, debtor, callback) {
     var today = formatDate(new Date());
-    db.switchBook(bookid, debtor, today, function(err) {
+    db.updateBooks(id, {status: debtor, lastmodified: today}, function(err) {
         callback(err);
     });
 };
@@ -110,5 +106,22 @@ module.exports.add = function(name, series, author, isbn, owner, callback) {
                'available', today, today, function(err) {
         callback(err);
     });
-  
+};
+
+module.exports.modify = function(id, name, series, author, isbn, owner, callback) {
+    db.updateBooks(id, {name: name, 
+                        series: series, 
+                        author: author, 
+                        isbn: isbn, 
+                        owner:owner,
+                        lastmodified: formatDate(new Date())}, 
+                   function(err) {
+        callback(err);
+    });
+};
+
+module.exports.deleteById = function(id, callback) {
+    db.delBooks({id: id}, function(err) {
+        callback(err);
+    });
 };
