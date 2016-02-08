@@ -10,7 +10,7 @@ create table books (
     name string not null,
     series string,
     author string  not null,
-    isbn string  not null,
+    barcode string  not null,
     owner string  not null,
     status string default 'available',
     createdate string,
@@ -39,7 +39,7 @@ class Book {
             this.name         = row.name;
             this.series       = row.series;
             this.author       = row.author;
-            this.isbn         = row.isbn;
+            this.barcode         = row.barcode;
             this.owner        = row.owner;
             this.status       = row.status;
             this.createdate   = row.createdate;
@@ -50,7 +50,7 @@ class Book {
             this.name         = arguments[0];
             this.series       = arguments[0]
             this.author       = arguments[0];		
-            this.isbn         = arguments[0];
+            this.barcode         = arguments[0];
             this.owner        = arguments[0];
             this.status       = arguments[0];
             this.createdate   = arguments[0];
@@ -60,7 +60,7 @@ class Book {
     Sql() {
         return util.format("insert into books(" + Book.fields() + ")" +
             " values(null, '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
-            this.name, this.series, this.author, this.isbn, 
+            this.name, this.series, this.author, this.barcode, 
             this.owner, this.createdate, this.lastmodified);
     }
 };    
@@ -100,19 +100,19 @@ module.exports.switchto = function(id, debtor, callback) {
     });
 };
 
-module.exports.add = function(name, series, author, isbn, owner, callback) {
+module.exports.add = function(name, series, author, barcode, owner, callback) {
     var today = formatDate(new Date());
-    db.addBook(name, series, author, isbn, owner, 
+    db.addBook(name, series, author, barcode, owner, 
                'available', today, today, function(err) {
         callback(err);
     });
 };
 
-module.exports.modify = function(id, name, series, author, isbn, owner, callback) {
+module.exports.modify = function(id, name, series, author, barcode, owner, callback) {
     db.updateBooks(id, {name: name, 
                         series: series, 
                         author: author, 
-                        isbn: isbn, 
+                        barcode: barcode, 
                         owner:owner,
                         lastmodified: formatDate(new Date())}, 
                    function(err) {

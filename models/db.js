@@ -4,7 +4,7 @@ var debug = require('debug')('bookshelf:server');
 var util = require('util');
 var _ = require('underscore')._;
 
-var bookFields = ['id', 'name', 'series', 'author', 'isbn', 'owner', 
+var bookFields = ['id', 'name', 'series', 'author', 'barcode', 'owner', 
         'status', 'createdate', 'lastmodified'].join(",");
 
 function genWhereClause(conditions) {
@@ -35,7 +35,7 @@ function genSetClause(setfields) {
          return "";
 }
 
-module.exports.addBook = function(name, series, author, isbn, owner, 
+module.exports.addBook = function(name, series, author, barcode, owner, 
                                   status, createdt, lastdt, callback ) {
     var db = new sqlite3.Database(settings.dbpath, function(err) {
         if (err)  return callback(err);
@@ -43,7 +43,7 @@ module.exports.addBook = function(name, series, author, isbn, owner,
         var stmt = db.prepare("insert into books(" + bookFields + ")" +
                               " values (?,?,?,?,?,?,?,?,?)");
 
-        stmt.run(null, name, series, author, isbn, owner, 
+        stmt.run(null, name, series, author, barcode, owner, 
                        status, createdt, lastdt);
         stmt.finalize();
         db.close();
@@ -93,7 +93,7 @@ module.exports.getBooks = function(conditions, callback) {
     var wheres = genWhereClause(conditions);
     
     var querystr = "select " + bookFields + " from books" +
-                   wheres + " order by series, isbn, owner";
+                   wheres + " order by series, barcode, owner";
     
     var db = new sqlite3.Database(settings.dbpath, function (err) {
         if (err)

@@ -51,7 +51,7 @@ module.exports.showAddForm = function(req, res, next) {
 module.exports.addNew = function(req, res, next) {
     debug("books.addNew");
     books.add(req.body.name.trim(),   req.body.series.trim(),
-              req.body.author.trim(), req.body.isbn.trim(),
+              req.body.author.trim(), req.body.barcode.trim(),
               req.body.owner, function(err) {
         if (err)
             res.send(err);
@@ -116,7 +116,7 @@ module.exports.showModifyForm = function(req, res, next) {
 module.exports.modify = function(req, res, next) {
     books.modify(req.params.id, 
                  req.body.name.trim(), req.body.series.trim(),
-                 req.body.author.trim(), req.body.isbn.trim(), req.body.owner, 
+                 req.body.author.trim(), req.body.barcode.trim(), req.body.owner, 
                  function(err) {
         if (err)
             res.send(err);

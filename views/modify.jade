@@ -12,10 +12,10 @@ block script
                     return;
                 } 
 
-                var isbn = $("#isbn");
-                if (isbn.val().trim() == "") {
-                    alert("#{resources.isbn} cannot be empty");
-                    isbn.focus();
+                var barcode = $("#barcode");
+                if (barcode.val().trim() == "") {
+                    alert("#{resources.barcode} cannot be empty");
+                    barcode.focus();
                     return;
                 } 
 
@@ -47,10 +47,10 @@ block content
                         input(id="author" name="author" value="#{book.author}")
                 tr
                     td
-                        label(for="isbn")= resources.isbn
+                        label(for="barcode")= resources.barcode
                     td *
                     td
-                        input(id="isbn" name="isbn" value="#{book.isbn}")
+                        input(id="barcode" name="barcode" value="#{book.barcode}")
                 tr
                     td 
                         label(for="owner")= resources.bookowner

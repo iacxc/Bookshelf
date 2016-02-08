@@ -12,7 +12,7 @@ module.exports = {
     bookname: '书 名',
     bookseries: '系 列',
     bookauthor: '作 者',
-    isbn: '书 号',
+    barcode: '条 码',
     bookowner: '所有人',
     bookcreate: '上架时间',
     bookstatus: '当前状态',
