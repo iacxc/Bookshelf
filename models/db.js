@@ -7,6 +7,8 @@ var _ = require('underscore')._;
 var bookFields = ['id', 'name', 'series', 'author', 'barcode', 'owner', 
         'status', 'createdate', 'lastmodified'].join(",");
 
+var userFields = ['uid', 'lastname', 'firstname'].join(",");
+
 function genWhereClause(conditions) {
     var clauses = _.pairs(conditions)
             .filter(function(entry) {
@@ -35,6 +37,8 @@ function genSetClause(setfields) {
          return "";
 }
 
+/* exports */
+// books
 module.exports.addBook = function(name, series, author, barcode, owner, 
                                   status, createdt, lastdt, callback ) {
     var db = new sqlite3.Database(settings.dbpath, function(err) {
@@ -124,3 +128,21 @@ module.exports.switchBook = function(id, debator, lastdt, callback) {
     });
 };
 
+// users
+module.exports.getUsers = function(conditions, callback) {
+    var wheres = genWhereClause(conditions);
+    
+    var querystr = "select " + userFields + " from users" + wheres + " order by uid";
+    
+    debug(querystr);
+    var db = new sqlite3.Database(settings.dbpath, function (err) {
+        if (err)
+            return callback(err);
+            
+        db.all(querystr, function(err, rows) {
+            db.close()
+
+            callback(err, rows);
+        });
+    }); 
+};

@@ -3,17 +3,16 @@ var books = require('../models/books');
 var basicAuth = require('basic-auth');
 
 module.exports.getAllUsers = function(req, res, next) {
-    users.getAll(function(users) {
-        res.send(users);
+    users.getAll(function(err, users) {
+        res.send(err || users);
     })
 };
 
 module.exports.getUserById = function(req, res, next) {
-    users.find(req.params.uid, function(err, user) {
+    users.findById(req.params.uid, function(err, user) {
         res.send(err || user);
     });
 };
-
 
 module.exports.getAllBooks = function(req, res, next) {
     books.getAll(function(err, books) {

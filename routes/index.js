@@ -1,11 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var books = require('../controllers/books');
+var resources = require('../resources');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    console.log(req.flash('test', 'Test'));
-    res.render('index', { title: 'BoolShelf' });
+    console.log(resources);
+    res.render('index', { title: 'BoolShelf',
+                          resources: resources });
 });
 
 

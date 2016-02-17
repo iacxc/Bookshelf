@@ -5,5 +5,17 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.js")
     block script
+    
   body
+    p(align="right")
+        - if (currUser != undefined)
+            b Welcome #{currUser.fullname}
+            | 
+            a(href="/users/logout")= resources.logout
+        - else
+            a(href="/users/login")= resources.login
+            
+        | &nbsp;&nbsp;
+        a(href="/users/register")= resources.register
+        
     block content

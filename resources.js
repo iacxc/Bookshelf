@@ -1,4 +1,9 @@
 module.exports = {
+    register: '注 册',
+    login: '登 录',
+    logout: '登 出',
+    username: '用户名',
+    password: '密  码',
     search: '查 找',
     op: '操 作',
     delete: '删除',

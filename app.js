@@ -30,7 +30,7 @@ app.use(session({
     secret: settings.cookieSecret,
     resave: true, 
     saveUninitialized: true, 
-    cookie: {maxAge: 60000}}));
+    cookie: {maxAge: 1000 * 60 * 60}}));
 
 app.use(flash(app));
 app.use(express.static(path.join(__dirname, 'public')));

@@ -13,6 +13,7 @@ module.exports.listAll = function(req, res, next) {
         else
 		    res.render('booklist', {
 			    title: 'BookShelf',
+                currUser: req.session.user,
 			    books: books,
                 resources: resources,
 		    });
@@ -39,8 +40,18 @@ module.exports.search = function(req, res, next) {
 };
 
 module.exports.showAddForm = function(req, res, next) {
-    users.getAll(function(users) {
-        res.render('addbook', {
+    var user = req.session.user;
+    
+    if (user == undefined)
+       return res.redirect('/users/login');
+       
+    users.getAll(function(err, users) {
+        if (err)
+            return res.send(err);
+            
+        res.render('addbook', { 
+            title: resources.addbook,
+            currUser: user,
             users: users,
             resources: resources
         });        

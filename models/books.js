@@ -4,19 +4,6 @@ var _ = require('underscore')._;
 var util = require('util');
 var db = require('./db');
 
-/* table definination
-create table books (
-    id integer not null primary key,
-    name string not null,
-    series string,
-    author string  not null,
-    barcode string  not null,
-    owner string  not null,
-    status string default 'available',
-    createdate string,
-    lastmodified string
-);
-*/             
 
 var formatDate = function(dt) {
     var yr = dt.getFullYear();
