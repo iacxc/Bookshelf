@@ -14,15 +14,18 @@ module.exports.login = function(req, res, next) {
     users.findById(uid, function(err, user) {
         if (err)
             return res.send(err);
-            
-        req.session.user = user;
-        res.redirect('/list');    
+
+        req.session.user = user;           
+        var redirect = req.session.last || '/list';
+        
+        req.session.last = undefined; 
+        res.redirect(redirect);    
     });
 }
 
 module.exports.logout = function(req, res, next) {
     req.session.user = undefined;
-    res.redirect('/list');    
+    res.redirect('/');    
     
 }
 

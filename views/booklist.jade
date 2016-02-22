@@ -37,8 +37,10 @@ block content
                onclick="{location.href='/add'}")= resources.addbook
         
     hr
+
     table(cellspacing="1")
         tr(bgcolor="#c0c0c0")
+            th= resources.index
             th= resources.bookname
             th= resources.bookseries
             th= resources.bookauthor
@@ -48,9 +50,11 @@ block content
             th= resources.bookstatus
             th= resources.booklastmodified
             th= resources.op
-
-        each book in books
+        - var index = 0
+        - each book in books
+            - index++
             tr(bgcolor="#eeeeee")
+                td= index
                 td= book.name
                 td= book.series
                 td= book.author

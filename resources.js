@@ -13,7 +13,7 @@ module.exports = {
     continue: '继 续',
     reset: '重 置',
     back: '返 回',
-    bookid: '序 号',
+    index: '序 号',
     bookname: '书 名',
     bookseries: '系 列',
     bookauthor: '作 者',

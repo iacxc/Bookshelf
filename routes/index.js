@@ -5,6 +5,7 @@ var resources = require('../resources');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+    console.log(req.protocol + '://' + req.headers.host + req.baseUrl);
     res.render('index', { title: 'BoolShelf',
                           resources: resources });
 });

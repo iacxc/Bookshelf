@@ -42,8 +42,10 @@ module.exports.search = function(req, res, next) {
 module.exports.showAddForm = function(req, res, next) {
     var user = req.session.user;
     
-    if (user == undefined)
-       return res.redirect('/users/login');
+    if (user == undefined) {
+        req.session.last = '/add';
+        return res.redirect('/users/login');
+    }
        
     users.getAll(function(err, users) {
         if (err)
@@ -107,7 +109,10 @@ module.exports.delete = function(req, res, next) {
 };
 
 module.exports.showModifyForm = function(req, res, next) {
-    users.getAll(function(users) {
+    users.getAll(function(err, users) {
+        if (err)
+            return res.send(err);
+            
         books.findById(req.params.id, function(err, book) {
             if (err)
                 res.send(err);
