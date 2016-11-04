@@ -1,12 +1,9 @@
 from pecan import expose, redirect, abort
 from webob.exc import status_map
 
+from pecan import expose
 from bookshelfv2.model import Book
 
-BOOKS = {
-    '160' : 'Fish father',
-    '170' : 'Eval doctor'
-}
 
 class BookController(object):
     def __init__(self, id_):
@@ -15,29 +12,38 @@ class BookController(object):
 
     @property
     def book(self):
-        print Book.find_by_id(self.id_)
-        if self.id_ in BOOKS:
-            return dict(id=self.id_, name=BOOKS[self.id_])
-        abort(404)
+        return Book.find_by_id(self.id_)
 
-    @expose(generic=True, template='json')
+    # HTTP GET <id>
+    @expose('json', generic=True)
     def index(self):
         return self.book
 
+    # HTTP DELETE <id>
+    @index.when(method='DELETE', template='json')
+    def index_delete(self):
+        Book.delete(self.id_)
+        return dict()
+
+    # HTTP POST <k=v> ...
+    @index.when(method='POST', template='json')
+    def index_post(self, **kws):
+        return dict()
+
+    # HTTP PUT <id> [[k=v]]...
+    @index.when(method='PUT', template='json')
+    def index_put(self, **kws):
+        return dict()
+
 
 class RootController(object):
-
     @expose()
-    def _lookup(selfself, id_, *remainder):
+    def _lookup(self, id_, *remainder):
         return BookController(id_), remainder
 
     @expose(generic=True, template='json')
     def index(self):
-        return [dict(id=k, name=v) for k,v in BOOKS.items()]
-
-    @index.when(method='POST')
-    def index_post(self, q):
-        redirect('https://pecan.readthedocs.io/en/latest/search.html?q=%s' % q)
+        return Book.find_all()
 
     @expose('error.html')
     def error(self, status):
@@ -48,6 +54,3 @@ class RootController(object):
         message = getattr(status_map.get(status), 'explanation', '')
         return dict(status=status, message=message)
 
-    @expose(generic=True, template='json')
-    def books(self):
-        return [{'id' : k, 'name' : v} for k,v in BOOKS.items()]
