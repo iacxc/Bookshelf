@@ -25,10 +25,6 @@ class BookController(object):
         Book.delete(self.id_)
         return dict()
 
-    # HTTP POST <k=v> ...
-    @index.when(method='POST', template='json')
-    def index_post(self, **kws):
-        return dict()
 
     # HTTP PUT <id> [[k=v]]...
     @index.when(method='PUT', template='json')
@@ -37,6 +33,7 @@ class BookController(object):
 
 
 class RootController(object):
+
     @expose()
     def _lookup(self, id_, *remainder):
         return BookController(id_), remainder
@@ -44,6 +41,12 @@ class RootController(object):
     @expose(generic=True, template='json')
     def index(self):
         return Book.find_all()
+
+    # HTTP POST <k=v> ...
+    @index.when(method='POST', template='json')
+    def index_post(self, **kws):
+        print(kws)
+        return dict()
 
     @expose('error.html')
     def error(self, status):
