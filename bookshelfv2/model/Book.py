@@ -9,6 +9,7 @@ from pecan import conf
 from sqlalchemy import create_engine, Column, Integer, String, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 
 
 reload(sys)
@@ -43,15 +44,17 @@ class Book(Base):
         self.lastmodified = today
 
     def __repr__(self):
-        return '<Book %s' % self.name
+        return '<Book: %s (series: %s, author: %s)>' % (
+            self.name, self.series, self.author)
 
 
-Session = sessionmaker()
 engine = create_engine('sqlite:///%s' % conf.app.dbpath,
                        convert_unicode=True,
                        echo=True)
-Session.configure(bind=engine)
+Base.metadata.create_all(engine)
 
+Session = sessionmaker(bind=engine)
+g_session = Session()
 
 
 def gen_where_clause(condition=None):
@@ -67,60 +70,48 @@ def gen_where_clause(condition=None):
 
 
 def search_book(condition=None):
-    session = Session()
+    books = g_session.query(Book)
 
-    books = session.query(Book)
     if condition is not None:
         where_clause = gen_where_clause(condition)
         books = books.filter(text(where_clause))
 
-    return books.all()
+    return books
 
 
 def find_by_id(bookid):
-    books = search_book({'id': bookid})
-    return books[0] if len(books) > 0 else dict()
+    try:
+        return search_book({'id': bookid}).one()
+    except NoResultFound:
+        return dict()
 
 
 def find_all():
-    return search_book()
+    return search_book().all()
 
 
-def add(name, series, author, barcode, owner):
-    book = Book(name, series, author, barcode, owner)
-    session.add(book)
-    return book
+def add(**kws):
+    book = Book(**kws)
+
+    g_session.add(book)
+    g_session.commit()
+
+    return g_session.query(Book).filter_by(name=book.name).one()
 
 
-def delete(bookid):
-    Db.delete_book({'id': bookid})
-"""
-def add_book()
-module.exports.addBook = function(name, series, author, barcode, owner,
-                                  status, createdt, lastdt, callback ) {
-    var db = new sqlite3.Database(settings.dbpath, function(err) {
-        if (err)  return callback(err);
+def delete(book):
+    g_session.delete(book)
+    g_session.commit()
 
-        var stmt = db.prepare("insert into books(" + bookFields + ")" +
-                              " values (?,?,?,?,?,?,?,?,?)");
+    return dict()
 
-        stmt.run(null, name, series, author, barcode, owner,
-                       status, createdt, lastdt);
-        stmt.finalize();
-        db.close();
 
-        callback();
+def update(book, **kws):
+    for k,v in kws.items():
+        setattr(book, k, v)
 
-    });
-};
+    g_session.commit()
 
-"""
-def delete_book(condition):
-    where_clause = gen_where_clause(condition)
+    return {'status': 'ok'}
 
-    sqlstr = "DELETE FROM books" + where_clause;
-    print(sqlstr)
-
-#    conn = sqlite3.connect(conf.app.dbpath)
-#    cursor = conn.cursor()
 
