@@ -1,9 +1,8 @@
 from pecan import expose, redirect, abort
-from webob.exc import status_map
 
-from pecan import expose
 from Book import BookController
 from User import UserController
+from HpUser import HpUserController
 
 
 class RootController(object):
@@ -23,3 +22,4 @@ class RootController(object):
 
     book = BookController()
     user = UserController()
+    hpuser = HpUserController()
