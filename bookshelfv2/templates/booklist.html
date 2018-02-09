@@ -1,0 +1,26 @@
+<%inherit file="layout.html" />
+## provide definitions for blocks we want to redefine
+<%def name="title()">
+    Book list
+</%def>
+
+<%def name="javascript()">
+</%def>
+
+## now define the body of the template
+    <table cellspacing="1">
+        <tr>
+            <th>${ resource['index'] }</th>
+            <th>${ resource['bookname'] }</th>
+            <th>${ resource['bookseries'] }</th>
+            <th>${ resource['bookauthor'] }</th>
+            <th>${ resource['barcode'] }</th>
+            <th>${ resource['bookowner'] }</th>
+            <th>${ resource['bookcreate'] }</th>
+            <th>${ resource['bookstatus'] }</th>
+            <th>${ resource['booklastmodified'] }</th>
+            <th>${ resource['op'] }</th>
+        </tr>
+    </table>
+
+
